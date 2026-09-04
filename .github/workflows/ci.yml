@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      # 50+ unit/integration tests via node:test. One test exercises mDNS
+      # peer discovery over real UDP multicast, which needs the runner's
+      # network namespace to allow it - GitHub-hosted ubuntu runners are
+      # full VMs and support this, but a self-hosted/containerized runner
+      # might not; if this ever flakes there specifically, that's why.
+      - run: npm test
+
+      # Forks a real aggregator + 3 edge client processes and runs a full
+      # federated round over real libp2p connections end to end. Confirmed
+      # to self-terminate once the aggregator completes its configured
+      # rounds (see scripts/test-cluster.ts) - no external timeout needed,
+      # the job timeout above is just a safety net.
+      - run: npm run cluster:test

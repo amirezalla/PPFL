@@ -1,0 +1,47 @@
+{
+  "name": "@nexus-ppfl/ml-engine",
+  "version": "0.1.0",
+  "description": "On-device model training and weight-delta extraction for Nexus-PPFL edge clients",
+  "keywords": [
+    "onnxruntime",
+    "federated-learning",
+    "edge-ml",
+    "on-device-training",
+    "differential-privacy",
+    "machine-learning"
+  ],
+  "license": "MIT",
+  "author": "Amirezalla",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirezalla/PPFL.git",
+    "directory": "packages/ml-engine"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsc -p tsconfig.test.json && cd dist-test && node --test"
+  },
+  "dependencies": {
+    "@nexus-ppfl/crypto": "^0.1.0",
+    "@nexus-ppfl/network": "^0.1.0",
+    "onnxruntime-node": "^1.20.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "typescript": "^5.6.3"
+  }
+}

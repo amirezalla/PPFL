@@ -1,0 +1,56 @@
+{
+  "name": "@nexus-ppfl/network",
+  "version": "0.1.0",
+  "description": "libp2p PubSub networking and FedAvg coordination for Nexus-PPFL",
+  "keywords": [
+    "libp2p",
+    "federated-learning",
+    "federated-averaging",
+    "pubsub",
+    "p2p",
+    "protobuf",
+    "mdns"
+  ],
+  "license": "MIT",
+  "author": "Amirezalla",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirezalla/PPFL.git",
+    "directory": "packages/network"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && mkdir -p dist/proto && cp src/proto/weights.proto dist/proto/weights.proto",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsc -p tsconfig.test.json && mkdir -p dist-test/proto && cp src/proto/weights.proto dist-test/proto/weights.proto && cd dist-test && node --test"
+  },
+  "dependencies": {
+    "@chainsafe/libp2p-gossipsub": "^14.1.0",
+    "@chainsafe/libp2p-noise": "^16.0.0",
+    "@chainsafe/libp2p-yamux": "^7.0.1",
+    "@libp2p/bootstrap": "^11.0.13",
+    "@libp2p/identify": "^3.0.13",
+    "@libp2p/interface": "^2.2.1",
+    "@libp2p/mdns": "^11.0.47",
+    "@libp2p/websockets": "^9.1.2",
+    "libp2p": "^2.4.0",
+    "protobufjs": "^7.4.0",
+    "uint8arrays": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "typescript": "^5.6.3"
+  }
+}

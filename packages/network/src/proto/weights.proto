@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package nexus.ppfl;
+
+// A single edge client's masked/noised weight-delta update for one training round.
+message WeightUpdate {
+  string client_id = 1;
+  uint32 round = 2;
+  uint32 num_samples = 3;
+  bytes weights = 4;   // little-endian Float32Array bytes
+  uint32 length = 5;   // element count, since `weights` is raw bytes
+}
+
+// The current global model broadcast by the aggregator at the start of a round.
+message GlobalModel {
+  uint32 round = 1;
+  bytes weights = 2;
+  uint32 length = 3;
+  string model_hash = 4;
+}
+
+// Round lifecycle control messages published on the round-control topic.
+message RoundControl {
+  enum Phase {
+    UNKNOWN = 0;
+    ROUND_START = 1;
+    ROUND_CLOSED = 2;
+  }
+  Phase phase = 1;
+  uint32 round = 2;
+  uint32 expected_clients = 3;
+  double completion_threshold = 4;
+}

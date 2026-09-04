@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-test/
+*.log
+.DS_Store
+*.onnx
+*.ckpt
+# Tiny committed test fixture - a real, deliberately small ONNX model, not a generated artifact.
+!packages/ml-engine/fixtures/*.onnx
