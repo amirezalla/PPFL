@@ -27,7 +27,7 @@ Requires Node.js **20+** (the multi-process cluster demo specifically wants **23
 ```bash
 npm install
 npm run build
-npm test              # 50+ unit/integration tests across all three packages
+npm test              # 49 unit/integration tests across all three packages
 npm run cluster:test  # spins up a real aggregator + 3 edge clients as separate OS processes
 ```
 

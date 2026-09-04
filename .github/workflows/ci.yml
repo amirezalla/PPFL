@@ -20,11 +20,17 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run typecheck
-
+      # Must run before typecheck: ml-engine imports @nexus-ppfl/crypto and
+      # @nexus-ppfl/network by their built dist/*.d.ts, which only exist
+      # after this. `tsc --noEmit` (what typecheck runs) never produces
+      # them, so on a truly fresh checkout - no dist/ left over from a
+      # previous local build - typecheck-before-build fails to resolve
+      # those modules entirely.
       - run: npm run build
 
-      # 50+ unit/integration tests via node:test. One test exercises mDNS
+      - run: npm run typecheck
+
+      # 49 unit/integration tests via node:test. One test exercises mDNS
       # peer discovery over real UDP multicast, which needs the runner's
       # network namespace to allow it - GitHub-hosted ubuntu runners are
       # full VMs and support this, but a self-hosted/containerized runner
