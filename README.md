@@ -4,30 +4,57 @@ A Privacy-Preserving Federated Learning engine native to Node.js — edge device
 
 Most of this space (PySyft, Flower) is Python-first. Nexus-PPFL targets the Node.js / edge / IoT / browser-to-server side of it instead.
 
+## Who this is for
+
+The gap: federated learning tooling is built for Python running in a data center. But most of the *devices* that would actually benefit from it — phones, browsers, IoT sensors, edge gateways — don't run Python, they run JavaScript. If your stack is already Node and you want privacy-preserving federated learning, your options today are bolting on a Python microservice or building the whole stack yourself. This is meant to be the native alternative.
+
+- **JS/TS product teams** building on-device personalization (keyboard prediction, recommendation, health tracking) who want the model to improve from real usage across users' devices without ever centralizing raw data, and without standing up a separate Python service just for this one piece.
+- **IoT/smart-device manufacturers** — a fleet of devices with Node-based firmware (thermostats, sensors) jointly improving a shared prediction model from local data, where no raw reading ever leaves the device and a breach at the company can't reconstruct what any single device saw.
+- **Researchers and students** prototyping federated learning outside the Python ecosystem, where there's currently not much serious tooling for Node.
+
+The privacy claim is concrete, not marketing: even a fully compromised aggregator only ever sees masked noise from any single device (see [`@nexus-ppfl/crypto`](packages/crypto)) — the true signal only emerges once enough devices' contributions are summed. That said — see [Status](#status) below — treat this today as a solid reference implementation to build on, not something to drop into a regulated production system without an independent security review first.
+
 ## Status
 
 Early-stage. The federated-averaging, differential-privacy, and secure-aggregation math is unit-tested and verified against hand-computed values (see [Testing](#testing)) — but **none of it has been reviewed by a cryptographer or independent security auditor.** Treat this as a working engineering reference, not a production-hardened privacy guarantee, until it has had that review. If you're evaluating it for real sensitive data, get an independent audit first.
 
 ## Architecture
 
-Three packages, one monorepo:
+Four packages, one monorepo:
 
 | Package | What it does |
 |---|---|
 | [`@nexus-ppfl/crypto`](packages/crypto) | Differential privacy (Gaussian/Laplace mechanisms) and secure aggregation (pairwise ECDH masking + Shamir's Secret Sharing, including dropout recovery) |
 | [`@nexus-ppfl/network`](packages/network) | `libp2p` PubSub node (WebSockets + GossipSub + mDNS/bootstrap discovery), Protobuf wire format, straggler-tolerant `FedAvg` coordination |
 | [`@nexus-ppfl/ml-engine`](packages/ml-engine) | `EdgeTrainer` (local training via `onnxruntime-node`), `AggregatorNode` (server-side round orchestration), and the `client.ts`/`server.ts` processes that tie it all together |
+| [`nexus-ppfl`](packages/nexus-ppfl) | Thin convenience package that just re-exports all three of the above under one install |
 
 A design decision worth knowing about: `onnxruntime-node` only exposes `InferenceSession`, not a training API. So `EdgeTrainer` treats an optional ONNX model as a **frozen feature extractor** and trains a small linear head on top of it with a hand-written SGD implementation — see `packages/ml-engine/src/LinearHead.ts`. If no `model.onnx` is present, the head trains directly on raw features (plain logistic regression), which is exactly what the CSV/SQLite-free demo does.
 
+## Install
+
+Not yet published (see [Status](#status) — this is early-stage). Once it is, one command gets everything:
+
+```bash
+npm install nexus-ppfl
+```
+
+or install only the piece you need, since the three underlying packages have no interdependency on each other except `ml-engine`, which needs both:
+
+```bash
+npm install @nexus-ppfl/crypto       # DP + secure aggregation math, zero ML/network dependency
+npm install @nexus-ppfl/network      # libp2p transport + FedAvg coordination, zero crypto dependency
+npm install @nexus-ppfl/ml-engine    # on-device training - depends on the two above
+```
+
 ## Quick start
 
-Requires Node.js **20+** (the multi-process cluster demo specifically wants **23.6+/24+**, since it runs a `.ts` file directly via Node's built-in TypeScript support — no `ts-node` needed).
+To develop or contribute to this repo itself (rather than just install it as a dependency). Requires Node.js **20+** (the multi-process cluster demo specifically wants **23.6+/24+**, since it runs a `.ts` file directly via Node's built-in TypeScript support — no `ts-node` needed).
 
 ```bash
 npm install
 npm run build
-npm test              # 49 unit/integration tests across all three packages
+npm test              # 52 unit/integration tests across all four packages
 npm run cluster:test  # spins up a real aggregator + 3 edge clients as separate OS processes
 ```
 

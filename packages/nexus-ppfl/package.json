@@ -1,0 +1,51 @@
+{
+  "name": "nexus-ppfl",
+  "version": "0.1.0",
+  "description": "Privacy-Preserving Federated Learning engine native to Node.js - convenience package re-exporting @nexus-ppfl/crypto, @nexus-ppfl/network, and @nexus-ppfl/ml-engine under one install.",
+  "keywords": [
+    "federated-learning",
+    "differential-privacy",
+    "secure-aggregation",
+    "libp2p",
+    "onnxruntime",
+    "privacy-preserving",
+    "edge-ml"
+  ],
+  "license": "MIT",
+  "author": "Amirezalla",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirezalla/PPFL.git",
+    "directory": "packages/nexus-ppfl"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsc -p tsconfig.test.json && cd dist-test && node --test"
+  },
+  "dependencies": {
+    "@nexus-ppfl/crypto": "^0.1.0",
+    "@nexus-ppfl/network": "^0.1.0",
+    "@nexus-ppfl/ml-engine": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "typescript": "^5.6.3"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "nexus-ppfl",
+  "name": "nexus-ppfl-monorepo",
   "private": true,
   "version": "0.1.0",
   "description": "Privacy-Preserving Federated Learning engine native to Node.js",
@@ -21,10 +21,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "npm run build -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine",
+    "build": "npm run build -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine -w nexus-ppfl",
     "clean": "npm run clean --workspaces --if-present",
-    "typecheck": "npm run typecheck -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine",
-    "test": "npm run build && npm run test -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine",
+    "typecheck": "npm run typecheck -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine -w nexus-ppfl",
+    "test": "npm run build && npm run test -w @nexus-ppfl/crypto -w @nexus-ppfl/network -w @nexus-ppfl/ml-engine -w nexus-ppfl",
     "cluster:test": "npm run build && node scripts/test-cluster.ts"
   },
   "devDependencies": {
